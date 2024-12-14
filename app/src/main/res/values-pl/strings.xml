@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Matching Cards Game</string>
+    <string name="main_title">MATCHING PILØTS</string>
+    <string name="main_button_start">Graj</string>
+    <string name="main_button_settings">Ustawienia</string>
+    <string name="settings_title">Ustawienia</string>
+    <string name="settings_music">Muzyka</string>
+    <string name="settings_language">Język</string>
+    <string-array name="languages">
+        <item>English</item>
+        <item>Polski</item>
+    </string-array>
+    <string name="settings_cancel">Anuluj</string>
+    <string name="settings_save">Zapisz</string>
+</resources>
