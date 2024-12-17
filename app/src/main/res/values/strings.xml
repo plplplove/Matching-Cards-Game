@@ -12,4 +12,6 @@
     </string-array>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_save">Save</string>
+    <string name="menu_play">PLAY</string>
+    <string name="menu_text">Choose your album and theme your game</string>
 </resources>

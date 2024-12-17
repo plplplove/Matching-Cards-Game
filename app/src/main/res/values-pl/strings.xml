@@ -13,4 +13,6 @@
     </string-array>
     <string name="settings_cancel">Anuluj</string>
     <string name="settings_save">Zapisz</string>
+    <string name="menu_play">GRAJ</string>
+    <string name="menu_text">Wybierz album i motyw swojej gry</string>
 </resources>
