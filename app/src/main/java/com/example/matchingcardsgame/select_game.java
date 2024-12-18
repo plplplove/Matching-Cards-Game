@@ -21,12 +21,11 @@ import java.util.List;
 public class select_game extends AppCompatActivity {
 
     private TextView title;
-    private ImageView record, menuBack, menuSettings;
+    private ImageView record, menuBack;
     private Button playButton;
     private ViewPager2 viewPager;
     private MediaPlayer mediaPlayer;
     private int currentSongResId;
-    private SettingsDialog settingsDialog;
 
     private List<Integer> albumImages = Arrays.asList(
             R.drawable.album1,
@@ -67,9 +66,6 @@ public class select_game extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_game);
-
-        settingsDialog = new SettingsDialog(this, this::updateVolume);
-
         mediaPlayer = MediaPlayer.create(this, R.raw.song2);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
@@ -78,13 +74,23 @@ public class select_game extends AppCompatActivity {
         title = findViewById(R.id.menuTitle);
         playButton = findViewById(R.id.playButton);
         menuBack = findViewById(R.id.menuBack);
-        menuSettings = findViewById(R.id.menuSettings);
         viewPager = findViewById(R.id.viewPager);
+
+        menuBack.setOnClickListener(view -> {
+            Intent intent = new Intent(select_game.this, MainActivity.class);
+            intent.putExtra("CURRENT_SONG_RES_ID", currentSongResId);
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+            startActivity(intent);
+        });
 
         setupInfiniteScrollData();
 
         AlbumAdapter adapter = new AlbumAdapter(extendedAlbumImages);
         viewPager.setAdapter(adapter);
+
         viewPager.setCurrentItem(1, false);
 
         ObjectAnimator rotation = ObjectAnimator.ofFloat(record, "rotation", 0f, 360f);
@@ -94,6 +100,7 @@ public class select_game extends AppCompatActivity {
 
         viewPager.setPageTransformer(new RecordPageTransformer());
 
+        // Змінюємо кольори та музику при кожному свайпі
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -105,7 +112,6 @@ public class select_game extends AppCompatActivity {
                 playButton.setBackgroundColor(buttonColors.get(realPosition));
                 title.setTextColor(buttonColors.get(realPosition));
                 menuBack.setColorFilter(buttonColors.get(realPosition));
-                menuSettings.setColorFilter(buttonColors.get(realPosition));
 
                 playMusic(realPosition);
             }
@@ -126,17 +132,10 @@ public class select_game extends AppCompatActivity {
             }
         });
 
-        menuBack.setOnClickListener(view -> {
-            Intent intent = new Intent(select_game.this, MainActivity.class);
-            stopMusic();
-            startActivity(intent);
-        });
-
-        menuSettings.setOnClickListener(view -> settingsDialog.show());
-
+        // Перехід на наступну активність з поточною музикою
         playButton.setOnClickListener(v -> {
             Intent intent = new Intent(select_game.this, MainActivity.class);
-            stopMusic();
+            intent.putExtra("CURRENT_SONG_RES_ID", currentSongResId);
             startActivity(intent);
         });
     }
@@ -148,41 +147,26 @@ public class select_game extends AppCompatActivity {
     }
 
     private void playMusic(int position) {
+        // Зупиняємо поточну музику, якщо вона грає
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
         }
 
+        // Відтворюємо нову музику
         currentSongResId = songResIds.get(position);
         mediaPlayer = MediaPlayer.create(this, currentSongResId);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
     }
 
-    private void stopMusic() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-    }
-
-    private void updateVolume(int volume) {
-        float volumeLevel = volume / 100f;
-        if (mediaPlayer != null) {
-            mediaPlayer.setVolume(volumeLevel, volumeLevel);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        stopMusic();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopMusic();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
     }
 
     private class RecordPageTransformer implements ViewPager2.PageTransformer {
@@ -190,14 +174,28 @@ public class select_game extends AppCompatActivity {
         public void transformPage(View page, float position) {
             int pageWidth = page.getWidth();
 
-            if (position < -1 || position > 1) {
+            if (position < -1) {
+                record.setTranslationX(0);
                 record.setAlpha(0f);
-            } else {
+                record.setScaleX(1f);
+                record.setScaleY(1f);
+            } else if (position <= 1) {
                 record.setAlpha(1 - Math.abs(position));
-                record.setTranslationX(-position * pageWidth / 2);
+
+                if (position < 0) {
+                    record.setTranslationX(position * pageWidth / 2);
+                } else {
+                    record.setTranslationX(-position * pageWidth / 2);
+                }
+
                 float scaleFactor = 1 - Math.abs(position) * 0.2f;
                 record.setScaleX(scaleFactor);
                 record.setScaleY(scaleFactor);
+            } else {
+                record.setTranslationX(0);
+                record.setAlpha(0f);
+                record.setScaleX(1f);
+                record.setScaleY(1f);
             }
         }
     }

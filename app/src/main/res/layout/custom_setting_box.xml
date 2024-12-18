@@ -19,7 +19,6 @@
             android:fontFamily="@font/title_font"
             android:text="@string/settings_title"
             android:textSize="25sp"
-            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +46,6 @@
                 android:layout_marginStart="20dp"
                 android:fontFamily="@font/text_font"
                 android:text="@string/settings_music"
-                android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -87,7 +85,6 @@
                 android:layout_marginStart="20dp"
                 android:fontFamily="@font/text_font"
                 android:text="@string/settings_language"
-                android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -120,7 +117,6 @@
                 android:layout_marginEnd="30dp"
                 android:backgroundTint="#A6A6A6"
                 android:text="@string/settings_cancel"
-                android:textColor="@color/white"
                 android:fontFamily="@font/text_font"
                 android:textSize="12sp"
                 />
@@ -131,7 +127,6 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange"
                 android:text="@string/settings_save"
-                android:textColor="@color/white"
                 android:fontFamily="@font/text_font"
                 android:textSize="12sp" />
 
