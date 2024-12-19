@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class select_game extends AppCompatActivity {
+public class SelectGameMenu extends AppCompatActivity {
 
     private TextView title;
     private ImageView record, menuBack;
@@ -26,6 +26,7 @@ public class select_game extends AppCompatActivity {
     private ViewPager2 viewPager;
     private MediaPlayer mediaPlayer;
     private int currentSongResId;
+    private int currentActivityIndex = 0;
 
     private List<Integer> albumImages = Arrays.asList(
             R.drawable.album1,
@@ -59,9 +60,16 @@ public class select_game extends AppCompatActivity {
             R.raw.song6
     );
 
+    private List<Class<?>> activityClasses = Arrays.asList(
+            VesselGame.class,
+            BlurryfaceGame.class,
+            TrenchGame.class,
+            SAIGame.class,
+            ClancyGame.class
+    );
+
     private List<Integer> extendedAlbumImages;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +85,7 @@ public class select_game extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
 
         menuBack.setOnClickListener(view -> {
-            Intent intent = new Intent(select_game.this, MainActivity.class);
+            Intent intent = new Intent(SelectGameMenu.this, MainActivity.class);
             intent.putExtra("CURRENT_SONG_RES_ID", currentSongResId);
             if (mediaPlayer != null) {
                 mediaPlayer.release();
@@ -100,7 +108,6 @@ public class select_game extends AppCompatActivity {
 
         viewPager.setPageTransformer(new RecordPageTransformer());
 
-        // Змінюємо кольори та музику при кожному свайпі
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -114,6 +121,7 @@ public class select_game extends AppCompatActivity {
                 menuBack.setColorFilter(buttonColors.get(realPosition));
 
                 playMusic(realPosition);
+                currentActivityIndex = realPosition;
             }
 
             @Override
@@ -132,10 +140,9 @@ public class select_game extends AppCompatActivity {
             }
         });
 
-        // Перехід на наступну активність з поточною музикою
         playButton.setOnClickListener(v -> {
-            Intent intent = new Intent(select_game.this, MainActivity.class);
-            intent.putExtra("CURRENT_SONG_RES_ID", currentSongResId);
+            Class<?> targetActivity = activityClasses.get(currentActivityIndex);
+            Intent intent = new Intent(SelectGameMenu.this, targetActivity);
             startActivity(intent);
         });
     }
@@ -147,13 +154,11 @@ public class select_game extends AppCompatActivity {
     }
 
     private void playMusic(int position) {
-        // Зупиняємо поточну музику, якщо вона грає
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
         }
 
-        // Відтворюємо нову музику
         currentSongResId = songResIds.get(position);
         mediaPlayer = MediaPlayer.create(this, currentSongResId);
         mediaPlayer.setLooping(true);

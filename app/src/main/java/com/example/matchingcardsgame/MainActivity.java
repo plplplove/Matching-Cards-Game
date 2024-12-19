@@ -9,7 +9,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -55,14 +54,12 @@ public class MainActivity extends AppCompatActivity {
         background.setOnPreparedListener(mp -> mp.setLooping(true));
         background.start();
 
-        // Налаштування плеєра
         setupMediaPlayer();
 
         setupSettingsDialog();
 
-        // Перехід на меню гри
         btn_start.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, select_game.class);
+            Intent intent = new Intent(MainActivity.this, SelectGameMenu.class);
             startActivity(intent);
             stopMainMusic(); // Зупиняємо song1
         });
@@ -73,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupMediaPlayer() {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer.create(this, R.raw.song1);
-            mediaPlayer.setLooping(true); // Зациклюємо музику
+            mediaPlayer.setLooping(true);
             int savedVolume = sharedPreferences.getInt("volume", 50);
             setMediaPlayerVolume(savedVolume);
         }
@@ -177,13 +174,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        resumeMainMusic(); // Відновлюємо song1
+        resumeMainMusic();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stopMainMusic(); // Зупиняємо song1
+        stopMainMusic(); 
     }
 
     @Override

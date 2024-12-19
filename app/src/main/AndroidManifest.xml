@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <application
         android:allowBackup="true"
@@ -11,13 +11,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MatchingCardsGame"
-        tools:targetApi="31">
+        tools:targetApi="31" >
         <activity
-            android:name=".select_game"
+            android:name=".ClancyGame"
+            android:exported="false" />
+        <activity
+            android:name=".SAIGame"
+            android:exported="false" />
+        <activity
+            android:name=".TrenchGame"
+            android:exported="false" />
+        <activity
+            android:name=".BlurryfaceGame"
+            android:exported="false" />
+        <activity
+            android:name=".BlurryfaceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VesselGame"
+            android:exported="false" />
+        <activity
+            android:name=".SelectGameMenu"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
