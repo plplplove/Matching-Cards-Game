@@ -14,4 +14,14 @@
     <string name="settings_save">Save</string>
     <string name="menu_play">PLAY</string>
     <string name="menu_text">Choose your album and theme your game</string>
+    <string name="exit_home_title">Go to the main page?</string>
+    <string name="exit_yes">Yes</string>
+    <string name="exit_no">No</string>
+    <string name="exit_menu_title">Exit to menu?</string>
+    <string name="pause_title">Pause</string>
+    <string name="pause_continue">Continue</string>
+    <string name="pause_exit">Exit</string>
+    <string name="dialog_lost_title">Dema Won Again</string>
+    <string name="dialog_won_title">Blurryface Defeated</string>
+    <string name="dialog_try_again">Try Again</string>
 </resources>

@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:backgroundTint="@color/white"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_won_title"
+        android:textSize="20sp"
+        android:fontFamily="@font/title_font"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/menuButton"
+            android:fontFamily="@font/text_font"
+            android:textSize="13sp"
+            android:backgroundTint="#A6A6A6"
+            android:layout_marginRight="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pause_exit" />
+
+        <Button
+            android:id="@+id/retryButton"
+            android:fontFamily="@font/text_font"
+            android:textSize="13sp"
+            android:backgroundTint="@color/orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_try_again"
+            android:layout_marginEnd="10dp" />
+
+    </LinearLayout>
+</LinearLayout>

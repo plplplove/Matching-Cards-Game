@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         btn_settings = findViewById(R.id.main_button_settings);
         background = findViewById(R.id.main_background);
 
-        // Фонове відео
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.main_background);
         background.setVideoURI(videoUri);
         background.setOnPreparedListener(mp -> mp.setLooping(true));
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         btn_start.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, SelectGameMenu.class);
             startActivity(intent);
-            stopMainMusic(); // Зупиняємо song1
+            stopMainMusic();
         });
 
         btn_settings.setOnClickListener(view -> dialog.show());
@@ -180,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopMainMusic(); 
+        stopMainMusic();
     }
 
     @Override

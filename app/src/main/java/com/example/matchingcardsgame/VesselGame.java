@@ -3,15 +3,18 @@ package com.example.matchingcardsgame;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -41,10 +44,10 @@ public class VesselGame extends AppCompatActivity {
         setContentView(R.layout.activity_vessel_game);
 
         timerText = findViewById(R.id.timerText);
+        cardGrid = findViewById(R.id.cardGrid);
         menuButton = findViewById(R.id.menuButton);
         homeButton = findViewById(R.id.homeButton);
         pauseButton = findViewById(R.id.pauseButton);
-        cardGrid = findViewById(R.id.cardGrid);
 
         setupCards();
         startTimer();
@@ -71,7 +74,7 @@ public class VesselGame extends AppCompatActivity {
             card.setClipToOutline(true);
             card.setBackgroundResource(R.drawable.rounded_card);
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = 300; // Вказуємо розмір
+            params.width = 300;
             params.height = 300;
             params.setMargins(10, 10, 10, 10);
 
@@ -101,6 +104,11 @@ public class VesselGame extends AppCompatActivity {
                 matchedCards.add(secondCard);
                 firstCard = null;
                 secondCard = null;
+
+                if (matchedCards.size() == cards.size()) {
+                    gameTimer.cancel();
+                    showGameWonDialog();
+                }
             } else {
                 isClickable = false;
                 cardGrid.postDelayed(() -> {
@@ -115,6 +123,7 @@ public class VesselGame extends AppCompatActivity {
             }
         }
     }
+
     private void flipCard(final ImageView card, boolean showFront) {
         ObjectAnimator flipOut = ObjectAnimator.ofFloat(card, "rotationY", 0f, 90f);
         flipOut.setDuration(200);
@@ -148,7 +157,7 @@ public class VesselGame extends AppCompatActivity {
     }
 
     private void startTimer() {
-        gameTimer = new CountDownTimer(300000, 1000) {
+        gameTimer = new CountDownTimer(60000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 int minutes = (int) (millisUntilFinished / 1000) / 60;
@@ -158,19 +167,149 @@ public class VesselGame extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                timerText.setText("Time's up!");
+                timerText.setText("00:00");
+                showGameLostDialog();
             }
         };
         gameTimer.start();
     }
 
+    private void showCustomDialog(int layoutId, Runnable onConfirm, Runnable onCancel) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View customView = LayoutInflater.from(this).inflate(layoutId, null);
+        builder.setView(customView);
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        dialog.setCancelable(false);
+
+        Button yesButton = customView.findViewById(R.id.yesButton);
+        Button noButton = customView.findViewById(R.id.noButton);
+        Button continueButton = customView.findViewById(R.id.continueButton);
+        Button exitButton = customView.findViewById(R.id.exitButton);
+
+        if (yesButton != null) yesButton.setOnClickListener(v -> {
+            if (onConfirm != null) onConfirm.run();
+            dialog.dismiss();
+        });
+
+        if (noButton != null) noButton.setOnClickListener(v -> {
+            if (onCancel != null) onCancel.run();
+            dialog.dismiss();
+        });
+
+        if (continueButton != null) continueButton.setOnClickListener(v -> {
+            if (onCancel != null) onCancel.run();
+            dialog.dismiss();
+        });
+
+        if (exitButton != null) exitButton.setOnClickListener(v -> {
+            if (onConfirm != null) onConfirm.run();
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
     private void onMenuClick() {
+        if (gameTimer != null) gameTimer.cancel();
+
+        showCustomDialog(R.layout.dialog_exit_menu, () -> {
+            finish();
+        }, () -> {
+            if (gameTimer != null) startTimer();
+        });
     }
 
     private void onHomeClick() {
+        if (gameTimer != null) gameTimer.cancel();
+
+        showCustomDialog(R.layout.dialog_exit_home,
+                () -> {
+                    Intent intent = new Intent(VesselGame.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                },
+                () -> {
+                    if (gameTimer != null) startTimer();
+                }
+        );
     }
 
     private void onPauseClick() {
         if (gameTimer != null) gameTimer.cancel();
+
+        showCustomDialog(R.layout.dialog_pause, () -> {
+            showCustomDialog(R.layout.dialog_exit_menu, () -> finish(), null);
+        }, () -> {
+            if (gameTimer != null) startTimer();
+        });
+    }
+
+
+    // Показ діалогу "Виграв"
+    private void showGameWonDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View customView = LayoutInflater.from(this).inflate(R.layout.dialog_game_won, null);
+        builder.setView(customView);
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        dialog.setCancelable(false);
+
+        Button retryButton = customView.findViewById(R.id.retryButton);
+        Button menuButton = customView.findViewById(R.id.menuButton);
+
+        retryButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            restartGame();
+        });
+
+        menuButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            goToMenu();
+        });
+
+        dialog.show();
+    }
+
+    private void showGameLostDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View customView = LayoutInflater.from(this).inflate(R.layout.dialog_game_lost, null);
+        builder.setView(customView);
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        dialog.setCancelable(false);
+
+        Button retryButton = customView.findViewById(R.id.retryButton);
+        Button menuButton = customView.findViewById(R.id.menuButton);
+
+        retryButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            restartGame();
+        });
+
+        menuButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            goToMenu();
+        });
+
+        dialog.show();
+    }
+
+    private void restartGame() {
+        Intent intent = new Intent(VesselGame.this, VesselGame.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToMenu() {
+        Intent intent = new Intent(VesselGame.this, SelectGameMenu.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

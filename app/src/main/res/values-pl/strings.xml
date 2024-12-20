@@ -15,4 +15,14 @@
     <string name="settings_save">Zapisz</string>
     <string name="menu_play">GRAJ</string>
     <string name="menu_text">Wybierz album i motyw swojej gry</string>
+    <string name="exit_home_title">Przejdź do strony głównej?</string>
+    <string name="exit_yes">Tak</string>
+    <string name="exit_no">Nie</string>
+    <string name="exit_menu_title">Przejdź do menu?</string>
+    <string name="pause_title">Pauza</string>
+    <string name="pause_continue">Kontynuować</string>
+    <string name="pause_exit">Wyjść</string>
+    <string name="dialog_lost_title">Dema znów wygrała</string>
+    <string name="dialog_won_title">Blurryface pokonany</string>
+    <string name="dialog_try_again">Spróbuj ponownie</string>
 </resources>
